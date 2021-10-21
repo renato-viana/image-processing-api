@@ -13,5 +13,7 @@ npm run prettier-format
 npm run lint
 npm run build ->  Exclude test files from build 
 npm run test
-  
+
+#Configuration build test
+https://stackoverflow.com/questions/35470511/setting-up-tsconfig-with-spec-test-folder
 
