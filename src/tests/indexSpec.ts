@@ -16,7 +16,7 @@ describe('Test endpoints Sucess', () => {
     it('Respond with status 200', (done) => {
       request
         .get('/api/images')
-        .query({ filename: 'santamonica' })
+        .query({ filename: 'santamonica', width: 600, height: 400 })
         .set('Accept', 'image/jpg')
         .expect(200, done);
     });
@@ -37,7 +37,7 @@ describe('Test endpoints Error', () => {
     it('Respond with status 400', (done) => {
       request
         .get('/api/images')
-        .query({ filename: 'riodejaneiro' })
+        .query({ filename: 'riodejaneiro', width: 600, height: 400 })
         .set('Accept', 'image/jpg')
         .expect(400, done);
     });

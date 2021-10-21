@@ -32,9 +32,17 @@ images.post('/images', async (req, res) => {
 images.get('/images', async (req, res) => {
   try {
     const { filename } = req.query;
-    const outputPath = `./src/assets/thumb/${filename}.jpg`;
+    const width = parseInt(req.query.width as unknown as string, 10);
+    const height = parseInt(req.query.height as unknown as string, 10);
 
-    await fsPromises.stat(outputPath);
+    const outputPath = `./src/assets/thumb/${filename}.jpg`;
+    const image = await fsPromises.readFile(outputPath);
+
+    const imageResized = await sharp(image)
+      .resize(width, height)
+      .toFile(outputPath);
+
+    console.log(imageResized);
 
     res.statusMessage = `Ok - Image ${filename}`;
     res.status(200).sendFile(path.resolve(outputPath));
