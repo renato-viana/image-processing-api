@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import {
   imageResizer,
   paramValidator,
@@ -7,7 +7,7 @@ import {
 
 const images = express.Router();
 
-images.post('/images', async (req, res): Promise<void> => {
+images.post('/images', async (req: Request, res: Response): Promise<void> => {
   try {
     const paramFilename: unknown = req.query.filename;
     const paramWidth: unknown = req.query.width;
@@ -33,7 +33,7 @@ images.post('/images', async (req, res): Promise<void> => {
   }
 });
 
-images.get('/images', async (req, res): Promise<void> => {
+images.get('/images', async (req: Request, res: Response): Promise<void> => {
   try {
     const paramFilename: unknown = req.query.filename;
     const paramWidth: unknown = req.query.width;
