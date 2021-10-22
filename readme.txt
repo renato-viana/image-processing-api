@@ -17,3 +17,11 @@ npm run test
 #Configuration build test
 https://stackoverflow.com/questions/35470511/setting-up-tsconfig-with-spec-test-folder
 
+#throw error
+https://stackoverflow.com/questions/53080948/generic-throw-giving-expected-an-object-to-be-thrown-lint-error
+
+#typeof type guards
+https://www.typescriptlang.org/docs/handbook/2/narrowing.html?#using-type-predicates
+
+#error.code -> isErrnoException
+https://stackoverflow.com/questions/69422525/in-typescript-try-catch-error-object-shows-object-is-of-type-unknown-ts25

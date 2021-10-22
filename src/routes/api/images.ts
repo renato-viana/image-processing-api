@@ -1,54 +1,61 @@
 import express from 'express';
-import { promises as fsPromises } from 'fs';
-import sharp from 'sharp';
-import path from 'path';
+import {
+  imageResizer,
+  paramValidator,
+  isErrnoException,
+} from '../utilities/utilities';
 
 const images = express.Router();
 
-images.post('/images', async (req, res) => {
+images.post('/images', async (req, res): Promise<void> => {
   try {
-    const { filename } = req.query;
-    const width = parseInt(req.query.width as unknown as string, 10);
-    const height = parseInt(req.query.height as unknown as string, 10);
+    const paramFilename: unknown = req.query.filename;
+    const paramWidth: unknown = req.query.width;
+    const paramHeight: unknown = req.query.height;
 
-    const inputImage = `./src/assets/full/${filename}.jpg`;
-    const outputPath = `./src/assets/thumb/${filename}.jpg`;
-    const image = await fsPromises.readFile(inputImage);
+    const { filename, width, height } = paramValidator(
+      paramFilename,
+      paramWidth,
+      paramHeight
+    );
 
-    const imageResized = await sharp(image)
-      .resize(width, height)
-      .toFile(outputPath);
-
-    console.log(imageResized);
+    await imageResizer(filename, width, height);
 
     res.set('Content-Type', 'image/jpg');
     res.statusMessage = 'Created - The image was converted!';
     res.status(201).end();
   } catch (error) {
-    res.status(400).send("The image doesn't exist!");
+    if (isErrnoException(error) && error.code === 'ENOENT') {
+      res.status(404).send("The image doesn't exist!");
+    } else if (error instanceof Error) {
+      res.status(400).send(error.message);
+    }
   }
 });
 
-images.get('/images', async (req, res) => {
+images.get('/images', async (req, res): Promise<void> => {
   try {
-    const { filename } = req.query;
-    const width = parseInt(req.query.width as unknown as string, 10);
-    const height = parseInt(req.query.height as unknown as string, 10);
+    const paramFilename: unknown = req.query.filename;
+    const paramWidth: unknown = req.query.width;
+    const paramHeight: unknown = req.query.height;
 
-    const outputPath = `./src/assets/thumb/${filename}.jpg`;
-    const image = await fsPromises.readFile(outputPath);
+    const { filename, width, height } = paramValidator(
+      paramFilename,
+      paramWidth,
+      paramHeight
+    );
 
-    const imageResized = await sharp(image)
-      .resize(width, height)
-      .toFile(outputPath);
-
-    console.log(imageResized);
+    const imageResized = await imageResizer(filename, width, height);
 
     res.statusMessage = `Ok - Image ${filename}`;
-    res.status(200).sendFile(path.resolve(outputPath));
+    res.status(200).sendFile(imageResized);
   } catch (error) {
-    res.status(400).send("The image doesn't exist!");
+    if (isErrnoException(error) && error.code === 'ENOENT') {
+      res.status(404).send("The image doesn't exist!");
+    } else if (error instanceof Error) {
+      res.status(400).send(error.message);
+    }
   }
 });
 
-export = images;
+export default images;
